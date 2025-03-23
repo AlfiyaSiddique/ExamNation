@@ -91,8 +91,10 @@ const StudentSignUp = ({StudentFormEnable}) => {
         <Typography variant="h4" component="h1" align="center" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
           Student Sign Up
         </Typography>
-        <Typography sx={{textAlign: "center", color: "GrayText", cursor: "pointer"}}>Already have an Account? Sign in</Typography>
-        <Typography sx={{textAlign: "center", color: "GrayText",cursor: "pointer"}}>Admin Sign up</Typography>
+        <Typography sx={{textAlign: "center", color: "GrayText", cursor: "pointer"}} onClick={()=>StudentFormEnable("signin")}>
+        Already have an Account? Sign in
+        </Typography>
+        <Typography sx={{textAlign: "center", color: "GrayText",cursor: "pointer"}} >Admin Sign up</Typography>
         
         <form onSubmit={handleSubmit}>
           {/* Basic Student Information */}
@@ -366,7 +368,9 @@ const StudentSignUp = ({StudentFormEnable}) => {
                 px: 4, 
                 py: 1.5,
                 borderRadius: 2,
-                fontSize: '1rem'
+                fontSize: '1rem',
+                color: "white",
+                fontWeight: "bolder"
               }}
             >
               Register

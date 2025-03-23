@@ -59,11 +59,14 @@ const Home = () => {
   }
 
   const AdminFormEnable = (type)=>{
-    if (type === "login"){
-        setAdmin({signup: false, signin: true})
-        return
-    }
-    setAdmin({signup: true, signin: false})
+    if (type === "signin"){
+      setAdmin({signup: false, signin: true})
+      return
+  }else if(type === "close"){
+      setAdmin({signup: false, signin: false})
+      return
+  }
+  setAdmin({signup: true, signin: false})
   }
 
   return (
