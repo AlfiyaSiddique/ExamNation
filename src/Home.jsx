@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -26,16 +26,44 @@ import {
   EmojiEvents,
   Assessment,
   PersonAdd,
-  Check,
-  Cancel,
   Copyright,
 } from "@mui/icons-material";
+import StudentSignUp from "./Student/StudentSignUp";
+import StudentSignIn from "./Student/StudentSignIn";
 
 const Home = () => {
   const sectionRef = useRef(null);
+  const [student, setStudent] = useState({
+    signin: false,
+    signup: false
+  })
+  const [admin, setAdmin] = useState({
+    signin: false,
+    signup: false
+  })
 
   const scrollToSection = ()=>{
     sectionRef.current.scrollIntoView({behaviour: "smooth"})
+  }
+
+  const StudentFormEnable = (type)=>{
+    document.body.style.height = "200vh"
+    if (type === "signin"){
+        setStudent({signup: false, signin: true})
+        return
+    }else if(type === "close"){
+        setStudent({signup: false, signin: false})
+        return
+    }
+    setStudent({signup: true, signin: false})
+  }
+
+  const AdminFormEnable = (type)=>{
+    if (type === "login"){
+        setAdmin({signup: false, signin: true})
+        return
+    }
+    setAdmin({signup: true, signin: false})
   }
 
   return (
@@ -57,20 +85,25 @@ const Home = () => {
             component="div"
             sx={{ flexGrow: 1, fontWeight: "bold", color: "#0b0836", px: 10 }}
           >
-            ExamNation
+            TestTrack
           </Typography>
-          <Button color="inherit" variant="outlined" sx={{ mx: 5 }}>
-            Login
+          <Button color="inherit" variant="outlined" sx={{ mx: 5 }} onClick={()=>StudentFormEnable("signin")}>
+            Sign In
           </Button>
           <Button
             color="inherit"
             variant="contained"
             sx={{ bgcolor: "black", color: "white", mr: 10 }}
+            onClick={()=>StudentFormEnable("signup")}
           >
             Sign Up
           </Button>
         </Toolbar>
       </AppBar>
+
+      {/* Sign Ups & Sign Ins*/}
+     {student.signup? <StudentSignUp StudentFormEnable = {StudentFormEnable}/>: ""}
+     {student.signin? <StudentSignIn StudentFormEnable = {StudentFormEnable}/>: ""}
 
       {/* Hero Section */}
       <Box
@@ -337,10 +370,10 @@ const Home = () => {
       >
         <Container maxWidth="lg" sx={{ textAlign: "center", margin: "auto" }}>
           <Typography variant="h6" gutterBottom>
-            About ExamNation
+            About TestTrack
           </Typography>
           <Typography variant="body2" sx={{ width: "60vw", margin: "auto" }}>
-            ExamNation is the leading platform for educational institutions to
+            TestTrack is the leading platform for educational institutions to
             manage their examination processes efficiently. Our platform
             simplifies everything from registration to result analysis.
           </Typography>
