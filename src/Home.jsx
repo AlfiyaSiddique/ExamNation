@@ -308,7 +308,8 @@ const Home = () => {
                     </ListItem>
                   ))}
                 </List>
-                <Button variant="contained" sx={{width: "100%", fontWeight: "bolder"}}>Join as Student</Button>
+                <Button variant="contained" sx={{width: "100%", fontWeight: "bolder"}}>
+                <Link to="/student/dashboard">Join as Student</Link></Button>
               </Paper>
             </Grid>
 
@@ -353,7 +354,8 @@ const Home = () => {
                     </ListItem>
                   ))}
                 </List>
-                <Button variant="contained" sx={{width: "100%", fontWeight: "bolder"}}>Join as Admin</Button>
+                <Button variant="contained" sx={{width: "100%", fontWeight: "bolder"}}>
+                <Link to="/student/admin">Join as Admin</Link></Button>
               </Paper>
             </Grid>
           </Grid>
