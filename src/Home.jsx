@@ -17,7 +17,6 @@ import {
   ListItemIcon,
   ListItemText,
   Paper,
-  useTheme,
 } from "@mui/material";
 import {
   School,
@@ -30,9 +29,11 @@ import {
 } from "@mui/icons-material";
 import StudentSignUp from "./Student/StudentSignUp";
 import StudentSignIn from "./Student/StudentSignIn";
+import { useNavigate} from "react-router-dom";
 
 const Home = () => {
   const sectionRef = useRef(null);
+  const navigate = useNavigate();
   const [student, setStudent] = useState({
     signin: false,
     signup: false
@@ -308,8 +309,8 @@ const Home = () => {
                     </ListItem>
                   ))}
                 </List>
-                <Button variant="contained" sx={{width: "100%", fontWeight: "bolder"}}>
-                <Link to="/student/dashboard">Join as Student</Link></Button>
+                <Button variant="contained" sx={{width: "100%", fontWeight: "bolder"}} onClick={()=>navigate("/student/dashboard")}>
+                Join as Student</Button>
               </Paper>
             </Grid>
 
@@ -354,8 +355,8 @@ const Home = () => {
                     </ListItem>
                   ))}
                 </List>
-                <Button variant="contained" sx={{width: "100%", fontWeight: "bolder"}}>
-                <Link to="/student/admin">Join as Admin</Link></Button>
+                <Button variant="contained" sx={{width: "100%", fontWeight: "bolder"}} onClick={()=>navigate("/admin/dashboard")}>
+               Join as Admin</Button>
               </Paper>
             </Grid>
           </Grid>
