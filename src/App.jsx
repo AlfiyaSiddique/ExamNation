@@ -8,6 +8,9 @@ import HallTicket from "./Student/HallTicket";
 import BacklogFeeReport from "./Student/BacklogFeeReport";
 import ResultAnalysis from "./Student/ResultAnalysis";
 import TopperList from "./Student/TopperList";
+import AdminDashboard from "./Admin/Dashboard";
+import AdminLayout from "./Admin/AdminLayout";
+import ExamApplicationsVerify from "./Admin/ExamApplications";
 
 
 function App() {
@@ -20,6 +23,10 @@ function App() {
       <Route path="/student/backlog-fee-report" element={<Layout><BacklogFeeReport/></Layout>} />
       <Route path="/student/result-analysis" element={<Layout><ResultAnalysis/></Layout>} />
       <Route path="/student/topper-list" element={<Layout><TopperList/></Layout>} />
+
+      <Route path="/admin/dashboard" element={<AdminLayout><AdminDashboard/></AdminLayout>} />
+      <Route path="/admin/exam-applications" element={<AdminLayout><ExamApplicationsVerify/></AdminLayout>} />
+
 
     </Routes>
   );
