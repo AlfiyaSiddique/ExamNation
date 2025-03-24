@@ -12,21 +12,25 @@ import {
   MenuItem,
   Box,
   InputAdornment,
+  Snackbar,
+  Alert,
 } from "@mui/material";
-import {
-  Email,
-  Lock,
-} from "@mui/icons-material";
+import { Email, Lock } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 const StudentSignIn = ({ StudentFormEnable }) => {
+  const navigate = useNavigate();
+  
   // State for form fields
-  const navigator = useNavigate()
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     role: "",
   });
+
+  // State for Snackbar
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   // Handle input changes
   const handleChange = (e) => {
@@ -37,11 +41,29 @@ const StudentSignIn = ({ StudentFormEnable }) => {
     });
   };
 
+  // Handle Snackbar close
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") return;
+    setOpenSnackbar(false);
+  };
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
+
+    // Check login credentials
+    if (
+      formData.email === "samplestudent@gmail.com" &&
+      formData.role === "student"
+    ) {
+        navigate("/student/dashboard");
+      } else if (formData.email === "sampleadmin@gmail.com" && formData.role == "admin"){
+        navigate("/admin/dashboard");
+      }
+    else {
+      setSnackbarMessage("Invalid email or password or role!");
+      setOpenSnackbar(true);
+    }
   };
 
   return (
@@ -57,6 +79,7 @@ const StudentSignIn = ({ StudentFormEnable }) => {
         }}
         onClick={() => StudentFormEnable("close")}
       ></Box>
+      
       <Container
         sx={{
           position: "absolute",
@@ -84,7 +107,6 @@ const StudentSignIn = ({ StudentFormEnable }) => {
           </Typography>
 
           <form onSubmit={handleSubmit}>
-            {/* Basic Student Information */}
             <Box sx={{ mb: 4 }}>
               {/* Email Address */}
               <Grid item xs={12} sm={6} margin={5}>
@@ -106,7 +128,8 @@ const StudentSignIn = ({ StudentFormEnable }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} marginBottom={5} sm={6} marginLeft={5} marginRight={5}>
+              {/* Password */}
+              <Grid item xs={12} sm={6} marginLeft={5} marginRight={5} marginBottom={5}>
                 <TextField
                   required
                   fullWidth
@@ -125,6 +148,7 @@ const StudentSignIn = ({ StudentFormEnable }) => {
                 />
               </Grid>
 
+              {/* Role Selection */}
               <Grid item xs={12} sm={6} marginLeft={5} marginRight={5}>
                 <FormControl fullWidth required>
                   <InputLabel>Role</InputLabel>
@@ -154,10 +178,7 @@ const StudentSignIn = ({ StudentFormEnable }) => {
                     color: "white",
                     fontWeight: "bolder",
                   }}
-                  onClick={()=>{
-                    formData.role == "student"? navigator("/student/dashboard"):navigator("/admin/dashboard")
-                    }
-                  }>
+                >
                   Login
                 </Button>
               </Box>
@@ -165,6 +186,18 @@ const StudentSignIn = ({ StudentFormEnable }) => {
           </form>
         </Paper>
       </Container>
+
+      {/* Snackbar for error messages */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 };
