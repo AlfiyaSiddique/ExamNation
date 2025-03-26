@@ -98,7 +98,6 @@ const SignUp = ({ FormEnable }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     delete formData.cpassword;
-    try{
        await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, formData, {
         headers: {
           "Content-Type": "application/json",
@@ -114,12 +113,6 @@ const SignUp = ({ FormEnable }) => {
         setSnackbarMessage(res.message)
         setOpenSnackbar(true)
        })
-    }catch(error){
-      console.log(error);
-      setSnackbarMessage("Something Went Wrong! Please try later");
-      setOpenSnackbar(true);
-    }
-  
   };
 
   return (
