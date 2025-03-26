@@ -104,7 +104,7 @@ const SignUp = ({ FormEnable }) => {
         },
         withCredentials: true,
        })
-       .then((data)=>data.json)
+       .then((data)=>data.json())
        .then((res)=>{
         if(res.success){
           localStorage.setItem("token", res.token)

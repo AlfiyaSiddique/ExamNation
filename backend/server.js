@@ -6,6 +6,11 @@ import userRouter from "./routes/user.js";
 dotenv.config();
 
 const app = express();
+
+mongoose.connect(process.env.DB_URL)
+.then(() => console.log("MongoDB Connected!"))
+.catch(err => console.error("Connection error:", err));
+
 app.use(cors({
     origin: process.env.FRONTENDURL,
     methods: "GET,POST,PUT,DELETE,PATCH",
@@ -22,8 +27,6 @@ app.get("/", (req,res)=>{
 app.listen(process.env.PORT, () => {
   try {
     console.log("Server is running at port " + process.env.PORT);
-    mongoose.connect(process.env.DB_URL);
-    console.log("DB Connection successful");
   } catch (error) {
     console.error(error);
   }
