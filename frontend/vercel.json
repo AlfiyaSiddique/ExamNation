@@ -1,7 +1,6 @@
 {
     "rewrites": [
       { "source": "/(.*)", "destination": "/" }
-    ],
-    "build": "npm run build"
+    ]
   }
   
