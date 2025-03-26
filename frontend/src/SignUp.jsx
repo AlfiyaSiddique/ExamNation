@@ -98,21 +98,27 @@ const SignUp = ({ FormEnable }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     delete formData.cpassword;
-       await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-       })
-       .then((data)=>data.json())
-       .then((res)=>{
-        if(res.success){
-          localStorage.setItem("token", res.token)
-          navigator("/student/dashboard")
-        }
-        setSnackbarMessage(res.message)
-        setOpenSnackbar(true)
-       })
+    try {
+      const { data } = await axios.post(
+          `${import.meta.env.VITE_API_URL}/user/register`, 
+          formData, 
+          {
+              headers: { "Content-Type": "application/json" },
+              withCredentials: true,
+          }
+      );
+
+      if (data.success) {
+        setSnackbarMessage(data.message);
+        setOpenSnackbar(true);
+          localStorage.setItem("token", data.token);
+          navigator("/student/dashboard");
+      }
+  } catch (error) {
+      console.error(error);
+      setSnackbarMessage("Something went wrong. Please try again.");
+      setOpenSnackbar(true);
+  }
   };
 
   return (
