@@ -99,7 +99,11 @@ const SignUp = ({ FormEnable }) => {
     e.preventDefault();
     delete formData.cpassword;
     try{
-       await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, formData)
+       await axios.post(`${import.meta.env.VITE_API_URL}/user/register`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+       })
        .then((data)=>data.json)
        .then((res)=>{
         if(res.success){
