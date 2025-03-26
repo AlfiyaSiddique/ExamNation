@@ -103,6 +103,7 @@ const SignUp = ({ FormEnable }) => {
         headers: {
           "Content-Type": "application/json",
         },
+        withCredentials: true,
        })
        .then((data)=>data.json)
        .then((res)=>{

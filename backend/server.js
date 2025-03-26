@@ -6,14 +6,14 @@ import userRouter from "./routes/user.js";
 dotenv.config();
 
 const app = express();
-app.use(express.json())
-app.use(cors(cors({
-    origin: process.env.FRONTENDURL,  
+console.log(process.env.FRONTENDURL)
+app.use(cors({
+    origin: process.env.FRONTENDURL,
     methods: "GET,POST,PUT,DELETE,PATCH",
-    credentials: true, 
-  })
-))
+    credentials: true,
+  }));
 
+app.use(express.json())
 app.use("/user", userRouter)
 
 app.get("/", (req,res)=>{
