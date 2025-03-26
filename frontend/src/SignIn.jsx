@@ -18,7 +18,7 @@ import {
 import { Email, Lock } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
-const StudentSignIn = ({ StudentFormEnable }) => {
+const SignIn = ({ FormEnable }) => {
   const navigate = useNavigate();
   
   // State for form fields
@@ -77,7 +77,7 @@ const StudentSignIn = ({ StudentFormEnable }) => {
           width: "100vw",
           height: "100vh",
         }}
-        onClick={() => StudentFormEnable("close")}
+        onClick={() => FormEnable("close")}
       ></Box>
       
       <Container
@@ -101,7 +101,7 @@ const StudentSignIn = ({ StudentFormEnable }) => {
           </Typography>
           <Typography
             sx={{ textAlign: "center", color: "GrayText", cursor: "pointer" }}
-            onClick={() => StudentFormEnable("signup")}
+            onClick={() => FormEnable("signup")}
           >
             Do not have an Account? Sign Up
           </Typography>
@@ -202,4 +202,4 @@ const StudentSignIn = ({ StudentFormEnable }) => {
   );
 };
 
-export default StudentSignIn;
+export default SignIn;

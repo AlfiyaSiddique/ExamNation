@@ -26,25 +26,36 @@ import {
   School,
   Badge,
   Lock,
+  RemoveRedEyeOutlined,
   Book,
 } from "@mui/icons-material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const StudentSignUp = ({ StudentFormEnable }) => {
-  // State for form fields
+const SignUp = ({ FormEnable }) => {
   const navigator = useNavigate()
+  const [visible, setVisible] = useState(false)
+  const [cVisible, setCVisible] = useState(false)
+    const [openSnackbar, setOpenSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+
+    const handleCloseSnackbar = (event, reason) => {
+      if (reason === "clickaway") return;
+      setOpenSnackbar(false);
+    };
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    dateOfBirth: null,
+    dob: null,
     gender: "",
     email: "",
     phone: "",
-    institution: "",
-    studentId: "",
-    department: "",
+    college: "",
+    rollno: "",
+    dept: "",
     password: "",
     cpassword: "",
     role: "",
@@ -82,14 +93,39 @@ const StudentSignUp = ({ StudentFormEnable }) => {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Here you would typically send the data to your backend
+    delete formData.cpassword;
+    try{
+       await axios.post(import.meta.env.VITE_API_URL, formData)
+       .then((data)=>data.json)
+       .then((res)=>{
+        if(res.success){
+          setSnackbarMessage("Registered Successfully!")
+          setOpenSnackbar(true)
+          navigator("/student/dashboard")
+        }
+       })
+    }catch(error){
+      console.log(error);
+      setSnackbarMessage("Something Went Wrong! Please try later");
+      setOpenSnackbar(true);
+    }
+  
   };
 
   return (
     <>
+       <Snackbar
+               open={openSnackbar}
+               autoHideDuration={3000}
+               onClose={handleCloseSnackbar}
+               anchorOrigin={{ vertical: "top", horizontal: "right" }}
+             >
+               <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
+                        {snackbarMessage}
+                      </Alert>
+             </Snackbar>
       <Box
         sx={{
           position: "fixed",
@@ -99,7 +135,7 @@ const StudentSignUp = ({ StudentFormEnable }) => {
           width: "100vw",
           height: "100vh",
         }}
-        onClick={() => StudentFormEnable("close")}
+        onClick={() => FormEnable("close")}
       ></Box>
       <Container
         sx={{
@@ -122,7 +158,7 @@ const StudentSignUp = ({ StudentFormEnable }) => {
           </Typography>
           <Typography
             sx={{ textAlign: "center", color: "GrayText", cursor: "pointer" }}
-            onClick={() => StudentFormEnable("signin")}
+            onClick={() => FormEnable("signin")}
           >
             Already have an Account? Sign in
           </Typography>
@@ -190,7 +226,7 @@ const StudentSignUp = ({ StudentFormEnable }) => {
                   <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DatePicker
                       label="Date of Birth"
-                      value={formData.dateOfBirth}
+                      value={formData.dob}
                       onChange={handleDateChange}
                       renderInput={(params) => (
                         <TextField
@@ -287,13 +323,18 @@ const StudentSignUp = ({ StudentFormEnable }) => {
                     fullWidth
                     label="Password"
                     name="password"
-                    type="password"
+                    type={visible? "text":"password"}
                     value={formData.password}
                     onChange={handleChange}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
                           <Lock color="primary" />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <RemoveRedEyeOutlined color="primary"  style={{cursor: "pointer"}} onClick={()=>setVisible(!visible)}/>
                         </InputAdornment>
                       ),
                     }}
@@ -305,32 +346,38 @@ const StudentSignUp = ({ StudentFormEnable }) => {
                     fullWidth
                     label="Confirm Password"
                     name="cpassword"
-                    type="password"
+                    type={cVisible? "text":"password"}
                     value={formData.cpassword}
                     onChange={handleChange}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <Lock color="primary" />
+                          <Lock color="primary"/>
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <RemoveRedEyeOutlined style={{cursor: "pointer"}} color="primary" onClick={()=>setCVisible(!cVisible)}/>
                         </InputAdornment>
                       ),
                     }}
                   />
+                  {formData.cpassword.length > 0 && formData.cpassword != formData.password && <p className="text-red-500 text-sm">Password does not match!</p>}
                 </Grid>
                 <Grid item xs={12} sm={12}>
-                <FormControl fullWidth required>
-                  <InputLabel>Role</InputLabel>
-                  <Select
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    label="Role"
-                  >
-                    <MenuItem value="student">Student</MenuItem>
-                    <MenuItem value="admin">Admin</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
+                  <FormControl fullWidth required>
+                    <InputLabel>Role</InputLabel>
+                    <Select
+                      name="role"
+                      value={formData.role}
+                      onChange={handleChange}
+                      label="Role"
+                    >
+                      <MenuItem value="student">Student</MenuItem>
+                      <MenuItem value="admin">Admin</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
             </Box>
 
@@ -361,8 +408,8 @@ const StudentSignUp = ({ StudentFormEnable }) => {
                     required
                     fullWidth
                     label="University/College/School Name"
-                    name="institution"
-                    value={formData.institution}
+                    name="college"
+                    value={formData.college}
                     onChange={handleChange}
                     InputProps={{
                       startAdornment: (
@@ -382,8 +429,8 @@ const StudentSignUp = ({ StudentFormEnable }) => {
                         required
                         fullWidth
                         label="Roll Number / Student ID"
-                        name="studentId"
-                        value={formData.studentId}
+                        name="rollno"
+                        value={formData.rollno}
                         onChange={handleChange}
                         InputProps={{
                           startAdornment: (
@@ -402,8 +449,8 @@ const StudentSignUp = ({ StudentFormEnable }) => {
                         required
                         fullWidth
                         label="Department / Course"
-                        name="department"
-                        value={formData.department}
+                        name="dept"
+                        value={formData.dept}
                         onChange={handleChange}
                         InputProps={{
                           startAdornment: (
@@ -439,10 +486,6 @@ const StudentSignUp = ({ StudentFormEnable }) => {
                   color: "white",
                   fontWeight: "bolder",
                 }}
-                onClick={()=>{
-                    formData.role == "student"? navigator("/student/dashboard"):navigator("/admin/dashboard")
-                    }
-                  }
               >
                 Register
               </Button>
@@ -454,4 +497,4 @@ const StudentSignUp = ({ StudentFormEnable }) => {
   );
 };
 
-export default StudentSignUp;
+export default SignUp;

@@ -2,11 +2,19 @@ import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors"
+import userRouter from "./routes/user.js";
 dotenv.config();
 
 const app = express();
 app.use(express.json())
-app.use(cors())
+app.use(cors(cors({
+    origin: process.env.FRONTENDURL,  
+    methods: "GET,POST,PUT,DELETE,PATCH",
+    credentials: true, 
+  })
+))
+
+app.use("/user", userRouter)
 
 app.get("/", (req,res)=>{
     res.status(200).json({success: "True", message: "Server is alive"})

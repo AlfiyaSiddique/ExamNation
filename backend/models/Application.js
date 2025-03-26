@@ -1,5 +1,7 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, STATES } from "mongoose";
 import user from "./User";
+
+const Status = ["PENDING", "SUCCESS", "FAIL"]
 
 const Application = new Schema({
     student: {
@@ -9,15 +11,10 @@ const Application = new Schema({
     type:{type:  String, require: true},
     semester: {type:  Number, require: true},
     subjects: {type: [String], require: true},
-    gender: {type: String, require: true},
-    email: {type: String, require: true},
-    phone: {type: Number, require: true},
-    password: {type: String, require: true},
-    role: {type: String, require: true},
-    college: {type: String, require: true},
-    rollno: {type: String},
-    dept: {type: String},
+    paymentMethod: {type: String, require: true},
+    paymentDetails: {type: Object, require: true},
+    transactionStatus: {type: String, enum: Status},
 })
 
-const user = mongoose.model("user", User)
-export default user;
+const application = mongoose.model("application", Application)
+export default application;

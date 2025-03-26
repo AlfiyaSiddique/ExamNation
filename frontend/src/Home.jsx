@@ -27,18 +27,14 @@ import {
   PersonAdd,
   Copyright,
 } from "@mui/icons-material";
-import StudentSignUp from "./Student/StudentSignUp";
-import StudentSignIn from "./Student/StudentSignIn";
 import { useNavigate} from "react-router-dom";
+import SignUp from "./SignUp";
+import SignIn from "./SignIn";
 
 const Home = () => {
   const sectionRef = useRef(null);
   const navigate = useNavigate();
-  const [student, setStudent] = useState({
-    signin: false,
-    signup: false
-  })
-  const [admin, setAdmin] = useState({
+  const [auth, setAuth] = useState({
     signin: false,
     signup: false
   })
@@ -47,27 +43,15 @@ const Home = () => {
     sectionRef.current.scrollIntoView({behaviour: "smooth"})
   }
 
-  const StudentFormEnable = (type)=>{
-    document.body.style.height = "200vh"
+  const FormEnable = (type)=>{
     if (type === "signin"){
-        setStudent({signup: false, signin: true})
+        setAuth({signup: false, signin: true})
         return
     }else if(type === "close"){
-        setStudent({signup: false, signin: false})
+        setAuth({signup: false, signin: false})
         return
     }
-    setStudent({signup: true, signin: false})
-  }
-
-  const AdminFormEnable = (type)=>{
-    if (type === "signin"){
-      setAdmin({signup: false, signin: true})
-      return
-  }else if(type === "close"){
-      setAdmin({signup: false, signin: false})
-      return
-  }
-  setAdmin({signup: true, signin: false})
+    setAuth({signup: true, signin: false})
   }
 
   return (
@@ -91,14 +75,14 @@ const Home = () => {
           >
             TestTrack
           </Typography>
-          <Button color="inherit" variant="outlined" sx={{ mx: 5 }} onClick={()=>StudentFormEnable("signin")}>
+          <Button color="inherit" variant="outlined" sx={{ mx: 5 }} onClick={()=>FormEnable("signin")}>
             Sign In
           </Button>
           <Button
             color="inherit"
             variant="contained"
             sx={{ bgcolor: "black", color: "white", mr: 10 }}
-            onClick={()=>StudentFormEnable("signup")}
+            onClick={()=>FormEnable("signup")}
           >
             Sign Up
           </Button>
@@ -106,8 +90,8 @@ const Home = () => {
       </AppBar>
 
       {/* Sign Ups & Sign Ins*/}
-     {student.signup? <StudentSignUp StudentFormEnable = {StudentFormEnable}/>: ""}
-     {student.signin? <StudentSignIn StudentFormEnable = {StudentFormEnable}/>: ""}
+     {auth.signup? <SignUp FormEnable = {FormEnable}/>: ""}
+     {auth.signin? <SignIn FormEnable = {FormEnable}/>: ""}
 
       {/* Hero Section */}
       <Box

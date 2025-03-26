@@ -1,6 +1,7 @@
 import mongoose, { Schema } from "mongoose";
+import { hashPassword } from "../commonfunc.js";
 
-const User = new Schema({
+const UserSchema = new Schema({
   firstName: { type: String, require: true },
   lastName: { type: String, require: true },
   dob: { type: Date, require: true },
@@ -17,5 +18,11 @@ const User = new Schema({
   },
 });
 
-const user = mongoose.model("user", User);
-export default user;
+UserSchema.pre("save", async (next)=>{
+   if(!this.isModified("password")) return next();
+   this.password = hashPassword(this.password);
+   next();
+})
+
+const User = mongoose.model("user", UserSchema);
+export default User;
