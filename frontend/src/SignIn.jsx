@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import {
   Container,
   Paper,
@@ -17,22 +18,19 @@ import {
 } from "@mui/material";
 import { Email, Lock } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "./context/SnackBarContext";
 
 const SignIn = ({ FormEnable }) => {
-  const navigate = useNavigate();
+  const navigator = useNavigate();
   
-  // State for form fields
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     role: "",
   });
 
-  // State for Snackbar
-  const [openSnackbar, setOpenSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const {showSnackbar} = useSnackbar();
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -41,28 +39,27 @@ const SignIn = ({ FormEnable }) => {
     });
   };
 
-  // Handle Snackbar close
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") return;
-    setOpenSnackbar(false);
-  };
-
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Check login credentials
-    if (
-      formData.email === "samplestudent@gmail.com" &&
-      formData.role === "student"
-    ) {
-        navigate("/student/dashboard");
-      } else if (formData.email === "sampleadmin@gmail.com" && formData.role == "admin"){
-        navigate("/admin/dashboard");
-      }
-    else {
-      setSnackbarMessage("Invalid email or password or role!");
-      setOpenSnackbar(true);
+      try {
+        const { data } = await axios.post(
+            `${import.meta.env.VITE_API_URL}/user/login`, 
+            formData, 
+            {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true,
+            }
+        );
+  
+        if (data.success) {
+          showSnackbar(data.message, "success")
+          localStorage.setItem("token", data.token);
+          navigator("/student/dashboard");
+        }
+    } catch (error) {
+        console.error(error);
+        showSnackbar(error.message, "error")
+        
     }
   };
 
@@ -178,6 +175,7 @@ const SignIn = ({ FormEnable }) => {
                     color: "white",
                     fontWeight: "bolder",
                   }}
+                  onClick={handleSubmit}
                 >
                   Login
                 </Button>
@@ -186,18 +184,6 @@ const SignIn = ({ FormEnable }) => {
           </form>
         </Paper>
       </Container>
-
-      {/* Snackbar for error messages */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
     </>
   );
 };

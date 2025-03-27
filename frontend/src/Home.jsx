@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useEffect } from "react";
 import { useRef, useState } from "react";
 import {
   AppBar,
@@ -32,6 +32,13 @@ import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 
 const Home = () => {
+  const navigator = useNavigate();
+  useEffect(()=>{
+    if (localStorage.getItem("token")){
+        navigator("/student/dashboard")
+    }
+  }, [])
+
   const sectionRef = useRef(null);
   const navigate = useNavigate();
   const [auth, setAuth] = useState({

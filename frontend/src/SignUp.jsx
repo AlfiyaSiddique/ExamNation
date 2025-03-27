@@ -35,18 +35,14 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "./context/SnackBarContext";
 
 const SignUp = ({ FormEnable }) => {
+  const {showSnackbar} = useSnackbar()
   const navigator = useNavigate()
   const [visible, setVisible] = useState(false)
   const [cVisible, setCVisible] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
 
-    const handleCloseSnackbar = (event, reason) => {
-      if (reason === "clickaway") return;
-      setOpenSnackbar(false);
-    };
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -109,30 +105,17 @@ const SignUp = ({ FormEnable }) => {
       );
 
       if (data.success) {
-        setSnackbarMessage(data.message);
-        setOpenSnackbar(true);
-          localStorage.setItem("token", data.token);
-          navigator("/student/dashboard");
+        showSnackbar(data.message, "success")
+        localStorage.setItem("token", data.token);
+        navigator("/student/dashboard");
       }
   } catch (error) {
       console.error(error);
-      setSnackbarMessage("Something went wrong. Please try again.");
-      setOpenSnackbar(true);
   }
   };
 
   return (
     <>
-       <Snackbar
-               open={openSnackbar}
-               autoHideDuration={3000}
-               onClose={handleCloseSnackbar}
-               anchorOrigin={{ vertical: "top", horizontal: "right" }}
-             >
-               <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
-                        {snackbarMessage}
-                      </Alert>
-             </Snackbar>
       <Box
         sx={{
           position: "fixed",
