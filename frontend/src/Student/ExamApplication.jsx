@@ -106,7 +106,7 @@ const paymentTypeSchema = z
   
   const ExamApplication = () => {
     const [step, setStep] = useState("select");
-    // const [regularSubjects, setregularSubjects] = useState([]);
+    const [regularSubjects, setregularSubjects] = useState([]);
   // const {showSnackbar} = useSnackbar()
   const form = useForm({
     resolver: zodResolver(examSubjectSchema),
@@ -177,22 +177,13 @@ const paymentTypeSchema = z
 
   useEffect(()=>{
     axios.post(`${import.meta.env.VITE_API_URL}/subject/regular`, {semester})
+    .then((res)=>res.json())
     .then((data)=>{
-     console.log(data)
+      setregularSubjects(data.subjects)
     }).catch((err)=>{
       console.log(err)
     })
   }, [semester])
-
- let regularSubjects = [
-    { id: "cs501", name: "Database Management Systems" },
-    { id: "cs502", name: "Computer Networks" },
-    { id: "cs503", name: "Operating Systems" },
-    { id: "cs504", name: "Software Engineering" },
-    { id: "cs505", name: "Web Development" },
-  ];
-
-
 
   const backlogSubjects = [
     { id: "cs401", name: "Data Structures and Algorithms" },
@@ -345,7 +336,7 @@ const paymentTypeSchema = z
                         <div className="space-y-2">
                           {regularSubjects.map((subject) => (
                             <FormField
-                              key={subject.id}
+                              key={subject.code}
                               control={form.control}
                               name="subjects"
                               render={({ field }) => {
@@ -357,18 +348,18 @@ const paymentTypeSchema = z
                                     <FormControl>
                                       <Checkbox
                                         checked={field.value?.includes(
-                                          subject.name
+                                          subject._id
                                         )}
                                         onCheckedChange={(checked) => {
                                           return checked
                                             ? field.onChange([
                                                 ...field.value,
-                                                subject.name,
+                                                subject._id,
                                               ])
                                             : field.onChange(
                                                 field.value?.filter(
                                                   (value) =>
-                                                    value !== subject.id
+                                                    value !== subject._id
                                                 )
                                               );
                                         }}
