@@ -10,7 +10,7 @@ const Sidebar = ({ items, userType }) => {
   const navigator = useNavigate()
 
   return (
-    <>
+    <div className="h-[100vh]">
       <Sheet>
         <SheetTrigger asChild>
           <Button variant="outline" size="icon" className="md:hidden">
@@ -47,7 +47,7 @@ const Sidebar = ({ items, userType }) => {
             </nav>
             <div className="p-4 border-t">
               <Button
-                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
+                className="flex items-center gap-3 rounded-md px-3 py-2 text-sm  hover:bg-muted bg-[#25b7ea] text-white font-bold"
                 onClick={() => {
                   localStorage.removeItem("token");
                   navigator("/");
@@ -88,7 +88,7 @@ const Sidebar = ({ items, userType }) => {
         </nav>
         <div className="p-4 border-t">
           <Button
-            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted"
+            className="flex items-center gap-3 rounded-md px-3 py-2 text-sm  hover:bg-muted bg-[#25b7ea] text-white font-bold"
             onClick={() => {
               localStorage.removeItem("token");
               navigator("/");
@@ -99,7 +99,7 @@ const Sidebar = ({ items, userType }) => {
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

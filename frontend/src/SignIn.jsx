@@ -12,16 +12,15 @@ import {
   Select,
   MenuItem,
   Box,
-  InputAdornment,
-  Snackbar,
-  Alert,
+  InputAdornment
 } from "@mui/material";
-import { Email, Lock } from "@mui/icons-material";
+import { Email, Lock, RemoveRedEyeOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./context/SnackBarContext";
 
 const SignIn = ({ FormEnable }) => {
   const navigator = useNavigate();
+  const [visible, setVisible] = useState(false)
   
   const [formData, setFormData] = useState({
     email: "",
@@ -132,7 +131,7 @@ const SignIn = ({ FormEnable }) => {
                   fullWidth
                   label="Password"
                   name="password"
-                  type="password"
+                  type={visible? "text": "password"}
                   value={formData.password}
                   onChange={handleChange}
                   InputProps={{
@@ -141,6 +140,11 @@ const SignIn = ({ FormEnable }) => {
                         <Lock color="primary" />
                       </InputAdornment>
                     ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <RemoveRedEyeOutlined style={{cursor: "pointer"}} color="primary" onClick={()=>setVisible(!visible)}/>
+                      </InputAdornment>
+                    )
                   }}
                 />
               </Grid>

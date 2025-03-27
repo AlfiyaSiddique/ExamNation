@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import cors from "cors"
 import userRouter from "./routes/user.js";
+import applicationRouter from "./routes/application.js";
+import subjectRouter from "./routes/subjects.js";
 dotenv.config();
 
 const app = express();
@@ -18,11 +20,16 @@ app.use(cors({
   }));
 
 app.use(express.json())
-app.use("/user", userRouter)
+
 
 app.get("/", (req,res)=>{
-    res.status(200).json({success: "True", message: "Server is alive"})
+  res.status(200).json({success: "True", message: "Server is alive"})
 })
+
+app.use("/user", userRouter)
+app.use("/application", applicationRouter)
+app.use("/subject", subjectRouter)
+
 
 app.listen(process.env.PORT, () => {
   try {

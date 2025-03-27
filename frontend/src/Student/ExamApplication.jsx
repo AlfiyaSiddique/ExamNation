@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,8 +32,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
+// import { useSnackbar } from "@/context/SnackBarContext";
 
-// Exam Subject Schema
+
 const examSubjectSchema = z.object({
   semester: z.string().min(1, { message: "Please select a semester." }),
   subjects: z.array(z.string()).refine((value) => value.length > 0, {
@@ -41,7 +43,7 @@ const examSubjectSchema = z.object({
   }),
 });
 
-// Payment Type Schema
+
 const paymentTypeSchema = z
   .object({
     paymentMethod: z.enum(["credit", "debit", "netbanking", "upi"], {
@@ -57,9 +59,8 @@ const paymentTypeSchema = z
     upi: z.string().optional(),
   })
   .superRefine((data, ctx) => {
-    // Validate based on payment method
+
     if (["credit", "debit"].includes(data.paymentMethod)) {
-      // Card number validation
       if (!data.cardNumber || data.cardNumber.trim() === "" || data.cardNumber.length < 12) {
         ctx.addIssue({
           path: ["cardNumber"],
@@ -67,8 +68,7 @@ const paymentTypeSchema = z
           code: z.ZodIssueCode.custom
         });
       }
-
-      // CVV validation
+  
       if (!data.cvv || data.cvv.trim() === "" || data.cvv.length < 3) {
         ctx.addIssue({
           path: ["cvv"],
@@ -76,8 +76,7 @@ const paymentTypeSchema = z
           code: z.ZodIssueCode.custom
         });
       }
-
-      // Expiry Date validation
+ 
       if (!data.expiryDate || data.expiryDate.trim() === "" || data.expiryDate.length !== 5) {
         ctx.addIssue({
           path: ["expiryDate"],
@@ -87,7 +86,6 @@ const paymentTypeSchema = z
       }
     }
 
-    // Netbanking validation
     if (data.paymentMethod === "netbanking" && (!data.netbanking || data.netbanking.trim() === "")) {
       ctx.addIssue({
         path: ["netbanking"],
@@ -96,7 +94,6 @@ const paymentTypeSchema = z
       });
     }
 
-    // UPI validation
     if (data.paymentMethod === "upi" && (!data.upi || data.upi.trim() === "")) {
       ctx.addIssue({
         path: ["upi"],
@@ -105,16 +102,18 @@ const paymentTypeSchema = z
       });
     }
   });
-
-// Example Component Usage
-const ExamApplication = () => {
-  const [step, setStep] = useState("select");
+  
+  
+  const ExamApplication = () => {
+    const [step, setStep] = useState("select");
+    // const [regularSubjects, setregularSubjects] = useState([]);
+  // const {showSnackbar} = useSnackbar()
   const form = useForm({
     resolver: zodResolver(examSubjectSchema),
     defaultValues: {
       examType: "regular",
       subjects: [],
-      semester: "",
+      semester: "1",
     },
     mode: "onSubmit",
   });
@@ -133,9 +132,8 @@ const ExamApplication = () => {
     mode: "onSubmit", // Ensures validation only on submission
   });
 
-  function onSubmit(e) {
+  const onSubmit = async (e)=> {
     e.preventDefault();
-    console.log(step);
     if (step === "select") {
       form.trigger().then((isValid) => {
         if (isValid) {
@@ -147,20 +145,54 @@ const ExamApplication = () => {
       payment.trigger().then((isValid) => {
         if (isValid) {
           setStep("confirmation");
-        } else {
-          console.error("Validation failed");
         }
       });
     }
+    const applicationData = {
+      ...form.getValues(), ...payment.getValues()
+    }
+    console.log(applicationData)
+      // try {
+      //       const { data } = await axios.post(
+      //           `${import.meta.env.VITE_API_URL}/application/submit`, 
+      //           applicationData, 
+      //           {
+      //               headers: { "Content-Type": "application/json" },
+      //               withCredentials: true,
+      //           }
+      //       );
+      
+      //       if (data.success) {
+      //         showSnackbar(data.message, "success")
+      //         navigator("/student/hall-ticket");
+      //         showSnackbar("Download hall-ticket once application is verified", "success")
+
+      //       }
+      //   } catch (error) {
+      //       console.error(error);
+      //   }
   }
 
-  const regularSubjects = [
+  const semester =form.watch("semester");
+
+  useEffect(()=>{
+    axios.post(`${import.meta.env.VITE_API_URL}/subject/regular`, {semester})
+    .then((data)=>{
+     console.log(data)
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }, [semester])
+
+ let regularSubjects = [
     { id: "cs501", name: "Database Management Systems" },
     { id: "cs502", name: "Computer Networks" },
     { id: "cs503", name: "Operating Systems" },
     { id: "cs504", name: "Software Engineering" },
     { id: "cs505", name: "Web Development" },
   ];
+
+
 
   const backlogSubjects = [
     { id: "cs401", name: "Data Structures and Algorithms" },
@@ -325,13 +357,13 @@ const ExamApplication = () => {
                                     <FormControl>
                                       <Checkbox
                                         checked={field.value?.includes(
-                                          subject.id
+                                          subject.name
                                         )}
                                         onCheckedChange={(checked) => {
                                           return checked
                                             ? field.onChange([
                                                 ...field.value,
-                                                subject.id,
+                                                subject.name,
                                               ])
                                             : field.onChange(
                                                 field.value?.filter(
@@ -400,7 +432,7 @@ const ExamApplication = () => {
                 />
               </CardContent>
               <CardFooter>
-                <Button type="submit">Continue to Payment</Button>
+                <Button className={"bg-[#25b7ea] font-bold cursor-pointer"} type="submit">Continue to Payment</Button>
               </CardFooter>
             </Card>
         </form>
@@ -697,7 +729,7 @@ const ExamApplication = () => {
                 >
                   Back
                 </Button>
-                <Button type="submit">Complete Payment</Button>
+                <Button type="submit" className={"bg-[#25b7ea] font-bold cursor-pointer"}>Complete Payment</Button>
               </CardFooter>
             </Card>
             </form>
@@ -785,7 +817,7 @@ const ExamApplication = () => {
                 </div>
               </CardContent>
               <CardFooter className="flex justify-center">
-                <Button asChild>
+                <Button asChild className={"bg-[#25b7ea] font-bold cursor-pointer"}>
                   <a href="/student/dashboard">Return to Dashboard</a>
                 </Button>
               </CardFooter>

@@ -41,7 +41,7 @@ const Layout = ({
   return (
     <div className="flex min-h-screen">
       <Sidebar items={sidebarItems} userType="student" />
-      <div className="flex-1 overflow-auto">{children}</div>
+      <div className="flex-1 h-[100vh] overflow-y-scroll">{children}</div>
     </div>
   )
 }

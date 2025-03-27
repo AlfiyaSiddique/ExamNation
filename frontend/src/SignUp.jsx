@@ -17,8 +17,6 @@ import {
   Divider,
   Box,
   InputAdornment,
-  Snackbar,
-  Alert
 } from "@mui/material";
 import {
   Person,
