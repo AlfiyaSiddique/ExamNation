@@ -190,11 +190,14 @@ const paymentTypeSchema = z
     }
     delete applicationData.agreeToTerms
       try {
+        const token = localStorage.getItem("token")
             const { data } = await axios.post(
                 `${import.meta.env.VITE_API_URL}/application/submit`, 
                 applicationData, 
                 {
-                    headers: { "Content-Type": "application/json" },
+                    headers: { "Content-Type": "application/json", 
+                        Authorization: `Bearer ${token}`, // Attach the token
+                     },
                     withCredentials: true,
                 }
             );
