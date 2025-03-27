@@ -1,4 +1,4 @@
-import Subject from "../models/Subjects";
+import Subject from "../models/Subjects.js";
 
 export const getRegularSubjects = async (req, res) => {
     try{

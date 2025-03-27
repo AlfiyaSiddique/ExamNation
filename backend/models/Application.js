@@ -1,12 +1,11 @@
 import mongoose, { Schema, STATES } from "mongoose";
-import user from "./User";
 
 const Status = ["PENDING", "SUCCESS", "FAIL"]
 
 const ApplicationSchema = new Schema({
     student: {
-        type: mongoose.ObjectId,
-        ref: user
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
     },
     type:{type:  String, require: true},
     semester: {type:  Number, require: true},
