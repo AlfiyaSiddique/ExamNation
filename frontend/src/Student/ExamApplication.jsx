@@ -109,15 +109,6 @@ const paymentTypeSchema = z
     const [regularSubjects, setregularSubjects] = useState([]);
   const {showSnackbar} = useSnackbar()
 
-  useEffect(()=>{
-    axios.post(`${import.meta.env.VITE_API_URL}/subject/regular`, {semester})
-    .then((data)=>{
-      setregularSubjects(data.data.subjects)
-    }).catch((err)=>{
-      console.log(err)
-    })
-  }, [semester])
-
   const form = useForm({
     resolver: zodResolver(examSubjectSchema),
     defaultValues: {
@@ -141,6 +132,17 @@ const paymentTypeSchema = z
     },
     mode: "onSubmit", // Ensures validation only on submission
   });
+
+  const semester =form.watch("semester");
+
+  useEffect(()=>{
+    axios.post(`${import.meta.env.VITE_API_URL}/subject/regular`, {semester})
+    .then((data)=>{
+      setregularSubjects(data.data.subjects)
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }, [semester])
 
   const onSubmit = async (e)=> {
     e.preventDefault();
@@ -208,7 +210,6 @@ const paymentTypeSchema = z
       }
   }
 
-  const semester =form.watch("semester");
 
   const backlogSubjects = [
     { id: "cs401", name: "Data Structures and Algorithms" },
