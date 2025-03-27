@@ -177,9 +177,8 @@ const paymentTypeSchema = z
 
   useEffect(()=>{
     axios.post(`${import.meta.env.VITE_API_URL}/subject/regular`, {semester})
-    .then((res)=>res.json())
     .then((data)=>{
-      setregularSubjects(data.subjects)
+      setregularSubjects(data.data.subjects)
     }).catch((err)=>{
       console.log(err)
     })
