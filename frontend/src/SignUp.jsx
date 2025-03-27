@@ -90,7 +90,7 @@ const SignUp = ({ FormEnable }) => {
   const handleDateChange = (date) => {
     setFormData({
       ...formData,
-      dateOfBirth: date,
+      dob: date,
     });
   };
 
