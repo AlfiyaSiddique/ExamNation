@@ -33,7 +33,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
-// import { useSnackbar } from "@/context/SnackBarContext";
+import { useSnackbar } from "@/context/SnackBarContext";
 
 
 const examSubjectSchema = z.object({
@@ -107,7 +107,17 @@ const paymentTypeSchema = z
   const ExamApplication = () => {
     const [step, setStep] = useState("select");
     const [regularSubjects, setregularSubjects] = useState([]);
-  // const {showSnackbar} = useSnackbar()
+  const {showSnackbar} = useSnackbar()
+
+  useEffect(()=>{
+    axios.post(`${import.meta.env.VITE_API_URL}/subject/regular`, {semester})
+    .then((data)=>{
+      setregularSubjects(data.data.subjects)
+    }).catch((err)=>{
+      console.log(err)
+    })
+  }, [semester])
+
   const form = useForm({
     resolver: zodResolver(examSubjectSchema),
     defaultValues: {
@@ -147,42 +157,58 @@ const paymentTypeSchema = z
           setStep("confirmation");
         }
       });
-    }
     const applicationData = {
       ...form.getValues(), ...payment.getValues()
     }
-    console.log(applicationData)
-      // try {
-      //       const { data } = await axios.post(
-      //           `${import.meta.env.VITE_API_URL}/application/submit`, 
-      //           applicationData, 
-      //           {
-      //               headers: { "Content-Type": "application/json" },
-      //               withCredentials: true,
-      //           }
-      //       );
-      
-      //       if (data.success) {
-      //         showSnackbar(data.message, "success")
-      //         navigator("/student/hall-ticket");
-      //         showSnackbar("Download hall-ticket once application is verified", "success")
 
-      //       }
-      //   } catch (error) {
-      //       console.error(error);
-      //   }
+    if(payment.getValues("paymentMethod") === "credit" ||payment.getValues("paymentMethod") === "credit"){
+       applicationData.paymentDetails = {
+        cardNumber: applicationData.cardNumber,
+        cvv: applicationData.cvv,
+        expiryDate: applicationData.expiryDate
+       }
+
+       delete applicationData.cardNumber
+       delete applicationData.cvv
+       delete applicationData.expiryDate
+    }
+
+    if(payment.getValues("paymentMethod") === "netbanking"){
+      applicationData.paymentDetails = {
+        netbanking: applicationData.netbanking,
+      }
+      delete applicationData.netbanking
+    }
+
+    if(payment.getValues("paymentMethod") === "upi"){
+      applicationData.paymentDetails = {
+        upi: applicationData.upi,
+      }
+      delete applicationData.upi
+    }
+    delete applicationData.agreeToTerms
+      try {
+            const { data } = await axios.post(
+                `${import.meta.env.VITE_API_URL}/application/submit`, 
+                applicationData, 
+                {
+                    headers: { "Content-Type": "application/json" },
+                    withCredentials: true,
+                }
+            );
+      
+            if (data.success) {
+              showSnackbar(data.message, "success")
+              navigator("/student/hall-ticket");
+              showSnackbar("Download hall-ticket once application is verified", "success")
+            }
+        } catch (error) {
+            console.error(error);
+        }
+      }
   }
 
   const semester =form.watch("semester");
-
-  useEffect(()=>{
-    axios.post(`${import.meta.env.VITE_API_URL}/subject/regular`, {semester})
-    .then((data)=>{
-      setregularSubjects(data.data.subjects)
-    }).catch((err)=>{
-      console.log(err)
-    })
-  }, [semester])
 
   const backlogSubjects = [
     { id: "cs401", name: "Data Structures and Algorithms" },
