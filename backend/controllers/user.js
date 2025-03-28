@@ -7,8 +7,16 @@ export const register = async (req, res) => {
     let user = await  User.findOne({email: req.body.email});
     if(user) return res.status(400).json({success: false, message: "User already exist"})
 
-    user = new User(req.body)
-    await user.save();
+  const userData = { ...req.body };
+
+  if (req.file) {
+      userData.image = {
+          binData: req.file.buffer
+      };
+  }
+
+  user = new User(userData);
+  await user.save();
 
     const token = jwt.sign({id: user._id}, process.env.JWTSECRET, {expiresIn: process.env.JWTEXPIRY})
     res.status(201).json({message: "User registered Successfully", success: true, token})

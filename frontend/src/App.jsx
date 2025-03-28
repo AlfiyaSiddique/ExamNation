@@ -11,7 +11,6 @@ import AdminDashboard from "./Admin/Dashboard";
 import AdminLayout from "./Admin/AdminLayout";
 import ExamApplicationsVerify from "./Admin/ExamApplications";
 import { SnackBarProvider } from "./context/SnackBarContext";
-import Profile from "./Student/Profile";
 
 function App() {
  
@@ -19,7 +18,6 @@ function App() {
     <SnackBarProvider>
       <Routes>
         <Route path="/" Component={Home} />
-        <Route path="/student/profile" Component={Profile} />
         <Route
           path="/student/dashboard"
           element={

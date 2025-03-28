@@ -17,6 +17,8 @@ import {
   Divider,
   Box,
   InputAdornment,
+  Input,
+  Avatar,
 } from "@mui/material";
 import {
   Person,
@@ -34,12 +36,14 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./context/SnackBarContext";
+import { CloudUpload } from "lucide-react";
 
 const SignUp = ({ FormEnable }) => {
   const {showSnackbar} = useSnackbar()
   const navigator = useNavigate()
   const [visible, setVisible] = useState(false)
   const [cVisible, setCVisible] = useState(false)
+  const [profileImage, setProfileImage] = useState(null)
 
 
   const [formData, setFormData] = useState({
@@ -55,6 +59,8 @@ const SignUp = ({ FormEnable }) => {
     password: "",
     cpassword: "",
     role: "",
+    image: null,
+    currentSemester: ""
   });
 
   // Department options
@@ -70,6 +76,8 @@ const SignUp = ({ FormEnable }) => {
     "Biology",
     "Other",
   ];
+
+  const Semester = [1,2,3,4,5,6,7,8]
 
   // Handle input changes
   const handleChange = (e) => {
@@ -88,26 +96,50 @@ const SignUp = ({ FormEnable }) => {
     });
   };
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImage(URL.createObjectURL(file));
+      setFormData({
+        ...formData,
+        image: file,
+      });
+    }
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    delete formData.cpassword;
+    
+    // Create FormData for file upload
+    const submitData = new FormData();
+    Object.keys(formData).forEach(key => {
+      if (key === 'dob' && formData[key]) {
+        submitData.append(key, formData[key].toISOString());
+      } else if (key !== 'cpassword') {
+        submitData.append(key, formData[key]);
+      }
+    });
+
     try {
       const { data } = await axios.post(
           `${import.meta.env.VITE_API_URL}/user/register`, 
-          formData, 
+          submitData, 
           {
-              headers: { "Content-Type": "application/json" },
+              headers: { 
+                "Content-Type": "multipart/form-data",
+              },
           }
       );
 
       if (data.success) {
         showSnackbar(data.message, "success")
         localStorage.setItem("token", data.token);
-        navigator("/student/profile");
+        navigator("/student/dashboard");
       }
   } catch (error) {
       console.error(error);
+      showSnackbar("Registration failed", "error");
   }
   };
 
@@ -151,6 +183,14 @@ const SignUp = ({ FormEnable }) => {
           </Typography>
 
           <form onSubmit={handleSubmit}>
+          <Box sx={{ mb: 4, display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <Avatar src={profileImage || ""} sx={{ width: 100, height: 100, mb: 2 }} />
+
+              <Button component="label" variant="contained" startIcon={<CloudUpload />} sx={{ mt: 2, color: "white", fontWeight: "bold"}}>
+                Upload Profile Image
+                <input type="file" accept="image/*" hidden onChange={handleImageUpload} required/>
+              </Button>
+            </Box> 
             {/* Basic Student Information */}
             <Box sx={{ mb: 4 }}>
               <Typography
@@ -454,8 +494,24 @@ const SignUp = ({ FormEnable }) => {
                         ))}
                       </TextField>
                     </Grid>
+                    <Grid item xs={12} sm={12}>
+                  <FormControl fullWidth required>
+                    <InputLabel>Current Semester</InputLabel>
+                    <Select
+                      name="currentSemester"
+                      value={formData.currentSemester}
+                      onChange={handleChange}
+                      label="Current Semester"
+                    >
+                    {Semester.map((sem, index)=>
+                     <MenuItem value={sem} key={index}>Semester {sem}</MenuItem>
+                )}
+                    </Select>
+                  </FormControl>
+                </Grid>
                   </>
                 )}
+               
               </Grid>
             </Box>
 

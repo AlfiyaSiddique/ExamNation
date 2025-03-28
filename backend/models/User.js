@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, {Schema } from "mongoose";
 import { hashPassword } from "../commonfunc.js";
 
 const UserSchema = new Schema({
@@ -16,6 +16,11 @@ const UserSchema = new Schema({
   image: {
     binData: Buffer,
   },
+  currentSemester: {type: Number, require: true},
+  backlog: {
+    type: Map,
+    of: [{ type: mongoose.Schema.Types.ObjectId, ref: "Subject" }],
+  }
 });
 
 UserSchema.pre("save", async function (next){
