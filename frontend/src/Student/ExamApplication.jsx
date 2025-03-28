@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -34,6 +34,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useSnackbar } from "@/context/SnackBarContext";
+import {useNavigate} from "react-router-dom"
 
 
 const examSubjectSchema = z.object({
@@ -108,6 +109,7 @@ const paymentTypeSchema = z
     const [step, setStep] = useState("select");
     const [regularSubjects, setregularSubjects] = useState([]);
   const {showSnackbar} = useSnackbar()
+  const navigator = useNavigate()
 
   const form = useForm({
     resolver: zodResolver(examSubjectSchema),
@@ -196,9 +198,8 @@ const paymentTypeSchema = z
                 applicationData, 
                 {
                     headers: { "Content-Type": "application/json", 
-                        Authorization: `Bearer ${token}`, // Attach the token
+                        Authorization: `Bearer ${token}`,
                      },
-                    withCredentials: true,
                 }
             );
       
@@ -208,7 +209,8 @@ const paymentTypeSchema = z
               showSnackbar("Download hall-ticket once application is verified", "success")
             }
         } catch (error) {
-            console.error(error);
+            console.error(error.response.data);
+            showSnackbar(error.response.data.message, "error")
         }
       }
   }

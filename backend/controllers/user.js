@@ -20,7 +20,7 @@ export const register = async (req, res) => {
 
 export const login = async (req,res)=>{
     try{
-        let user = User.findOne({email: req.body.email, role: req.body.role});
+        let user = await User.findOne({email: req.body.email, role: req.body.role});
         if(!user) return res.status(400).json({success: false, message: "User not found"})
     
         if(comparePassword(req.body.password, user.password)){

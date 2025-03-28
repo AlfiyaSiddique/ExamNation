@@ -98,14 +98,13 @@ const SignUp = ({ FormEnable }) => {
           formData, 
           {
               headers: { "Content-Type": "application/json" },
-              withCredentials: true,
           }
       );
 
       if (data.success) {
         showSnackbar(data.message, "success")
         localStorage.setItem("token", data.token);
-        navigator("/student/dashboard");
+        navigator("/student/profile");
       }
   } catch (error) {
       console.error(error);

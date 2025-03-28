@@ -3,7 +3,7 @@ import bcrypt from "bcrypt"
 export const hashPassword = async (plainTextPassword)=>{
   const saltRounds = 8;
   const hashedPassword = await bcrypt.hash(plainTextPassword, saltRounds)
-  return hashPassword
+  return hashedPassword
 }
 
 export const comparePassword = async (plainTextPassword, hashedPassword)=>{
