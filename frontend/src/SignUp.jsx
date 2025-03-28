@@ -37,9 +37,12 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./context/SnackBarContext";
 import { CloudUpload } from "lucide-react";
+import { useUser } from "./context/userContext";
 
 const SignUp = ({ FormEnable }) => {
   const {showSnackbar} = useSnackbar()
+  // eslint-disable-next-line no-unused-vars
+  const {user, setUser} = useUser()
   const navigator = useNavigate()
   const [visible, setVisible] = useState(false)
   const [cVisible, setCVisible] = useState(false)
@@ -135,6 +138,7 @@ const SignUp = ({ FormEnable }) => {
       if (data.success) {
         showSnackbar(data.message, "success")
         localStorage.setItem("token", data.token);
+        setUser(data.user)
         navigator("/student/dashboard");
       }
   } catch (error) {

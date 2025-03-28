@@ -17,6 +17,7 @@ import {
 import { Email, Lock, RemoveRedEyeOutlined } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "./context/SnackBarContext";
+import { useUser } from "./context/userContext";
 
 const SignIn = ({ FormEnable }) => {
   const navigator = useNavigate();
@@ -29,6 +30,8 @@ const SignIn = ({ FormEnable }) => {
   });
 
   const {showSnackbar} = useSnackbar();
+  // eslint-disable-next-line no-unused-vars
+  const {user, setUser} = useUser();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -52,6 +55,7 @@ const SignIn = ({ FormEnable }) => {
         if (data.success) {
           showSnackbar(data.message, "success")
           localStorage.setItem("token", data.token);
+          setUser(data.user)
           navigator("/student/dashboard");
         }
     } catch (error) {

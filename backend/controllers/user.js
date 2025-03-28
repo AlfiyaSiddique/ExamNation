@@ -19,7 +19,7 @@ export const register = async (req, res) => {
   await user.save();
 
     const token = jwt.sign({id: user._id}, process.env.JWTSECRET, {expiresIn: process.env.JWTEXPIRY})
-    res.status(201).json({message: "User registered Successfully", success: true, token})
+    res.status(201).json({message: "User registered Successfully", success: true, token}, user)
     }catch(error){
       console.log(error)
       res.status(500).json({message: "Server Error", success: false})
@@ -33,7 +33,11 @@ export const login = async (req,res)=>{
     
         if(comparePassword(req.body.password, user.password)){
             const token = jwt.sign({id: user._id}, process.env.JWTSECRET, {expiresIn: process.env.JWTEXPIRY})
-            res.status(201).json({message: "Login Successful", success: true, token})
+            let imageBase64 = null;
+            if (user.image && user.image.binData) {
+              imageBase64 = user.image.binData.toString('base64');
+            }
+            res.status(201).json({message: "Login Successful", success: true, token, user: {...user.toObject(), imageBase64}})
         }else{
             res.status(400).json({message: "Incorrect mail or password or role", success: false})
         }

@@ -11,11 +11,13 @@ import AdminDashboard from "./Admin/Dashboard";
 import AdminLayout from "./Admin/AdminLayout";
 import ExamApplicationsVerify from "./Admin/ExamApplications";
 import { SnackBarProvider } from "./context/SnackBarContext";
+import { UserContextProvider } from "./context/userContext";
 
 function App() {
  
   return (
     <SnackBarProvider>
+     <UserContextProvider>
       <Routes>
         <Route path="/" Component={Home} />
         <Route
@@ -84,6 +86,7 @@ function App() {
           }
         />
       </Routes>
+      </UserContextProvider>
     </SnackBarProvider>
   );
 }

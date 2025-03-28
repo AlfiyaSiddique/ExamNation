@@ -1,28 +1,32 @@
+/* eslint-disable no-unused-vars */
 import { Link } from "react-router-dom"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ClipboardList, Ticket, FileText, PieChart, Award, Bell } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { useUser } from "@/context/userContext"
 
 const Dashboard = ()=> {
+  const {user, setUser} = useUser();
   return (
     <div className="p-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold">Student Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, John Doe</p>
+          <p className="text-muted-foreground">Welcome back, {user.firstName} {user.lastName}</p>
         </div>
         <div className="mt-4 md:mt-0 flex items-center gap-2">
           <Button variant="outline" size="icon">
             <Bell className="h-4 w-4"/>
           </Button>
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-full bg-[#25b7ea] flex items-center justify-center text-primary-foreground">
-              JD
+            <div className="h-8 w-8 rounded-full border-3 border-black flex items-center justify-center text-primary-foreground">
+             <img src={`data:image/png;base64,${user.imageBase64}`} alt="profile image"/>
             </div>
             <div>
-              <p className="text-sm font-medium">John Doe</p>
-              <p className="text-xs text-muted-foreground">ID: ST12345</p>
+            {console.log(user)}
+              <p className="text-sm font-medium">{user.firstName} {user.lastName}</p>
+              <p className="text-xs text-muted-foreground">ID: {user?._id?.substring(0,6)}</p>
             </div>
           </div>
         </div>
