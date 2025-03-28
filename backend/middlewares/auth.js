@@ -10,7 +10,7 @@ export const authMiddleware = (req,res,next)=>{
     try{
        const decoded = jwt.verify(token.replace("Bearer",""), process.env.JWTSECRET)
        req.user = {id: decoded.id}
-       nect();
+       next();
     }catch(error){
         return res.status(403).json({Success: false, message: "Expired Session! Please Login"})
     }
